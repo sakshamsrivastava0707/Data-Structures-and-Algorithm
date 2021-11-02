@@ -1,0 +1,98 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) throws Exception {
+    // write your code here
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int n = Integer.parseInt(br.readLine());
+    int[][] arr = new int[n][n];
+
+    for (int j = 0; j < n; j++) {
+      String line = br.readLine();
+      for (int k = 0; k < n; k++) {
+        arr[j][k] = line.charAt(k) - '0';
+      }
+    }
+
+    findCelebrity(arr);
+
+  }
+
+  public static void findCelebrity(int[][] arr) {
+    // if a celebrity is there print it's index (not position), if there is not then
+    // print "none"
+
+    Stack<Integer> possibleCeleberityIndex = new Stack<>();
+
+    for (int pos = 0; pos < arr.length; pos++) {
+      possibleCeleberityIndex.push( pos);
+    }
+
+    // possible eliminating logic
+    // sarra logic ka baad there will be only one element on the peek of the stack (possible celeberity Index)
+    // while (possibleCeleberityIndex.size() != 1) {   
+        while (possibleCeleberityIndex.size() >= 2) { 
+        
+      int firstPossibleIndex = possibleCeleberityIndex.pop();
+      int secondPossibleIndex = possibleCeleberityIndex.pop();
+
+      if ( arr[firstPossibleIndex][secondPossibleIndex] == 1 ) {
+        // this means obviously firstPossibleIndex waala element celeberity nhi ho skta
+
+        // push karo usko jo ki  secondPossibleIndex possible celeberity ho skta hai
+        possibleCeleberityIndex.push(secondPossibleIndex);
+        // System.out.println(possibleCeleberityIndex.peek());
+      } else if (arr[secondPossibleIndex][firstPossibleIndex]== 1) {
+        // this means obviously secondPossibleIndex waala element celeberity nhi ho skta
+
+        // push karo usko jo ki firstPossibleIndex possible celeberity ho skta hai
+
+        possibleCeleberityIndex.push(firstPossibleIndex);
+      }
+    }
+
+      int possibleCeleberityIndexAns = possibleCeleberityIndex.peek();
+        
+
+      // ab ye check karo ki ye celeberity hai ki nhi hai
+      // 1. kya ye kisi  ko  bhi nhi jaaanta hai
+      // 2. kya isko sb jaanta hai
+
+      for (int col = 0; col < arr.length; col++) {
+
+        if (possibleCeleberityIndexAns == col) {
+            
+          continue;
+        }
+        else if (arr[possibleCeleberityIndexAns][col] == 1 ) {
+          // mtlb ki ye kisi ko jaanta hai
+          // mtlb false condition , not a celeberity
+        // System.out.println(arr[possibleCeleberityIndexAns][col]);
+          System.out.println("none");
+          return;
+        }
+      }
+
+
+      for ( int row = 0; row < arr.length; row++) {
+
+        if (possibleCeleberityIndexAns == row) {
+          continue;
+        } else if (arr[row][possibleCeleberityIndexAns] == 0) {
+          // mtlb koi aisa hai jo isko NHI JAANTA
+          // mtlb false condition , not a celeberity
+          System.out.println("none");
+          return;
+        }
+      }
+      // agr dono condition is good to go , mtlb ki index pa celeberity hai
+      System.out.println(possibleCeleberityIndexAns);
+      return;
+
+
+
+  }
+
+}
